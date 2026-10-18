@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>Orbit — AI Tools Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Orbit dashboard home" id="homeLink">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>orbit<span class="brand-dot">.</span><small>AI WORKSPACE</small></span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Dashboard filters">
+        <button class="nav-item active" data-filter="all"><span class="nav-icon">▦</span><span>All tools</span><span class="nav-count" id="allCount">10</span></button>
+        <button class="nav-item" data-filter="favorites"><span class="nav-icon">☆</span><span>Favorites</span><span class="nav-count" id="favoriteCount">0</span></button>
+      </nav>
+
+      <div class="side-label category-label">CATEGORIES</div>
+      <nav class="side-nav category-nav" id="categoryNav" aria-label="Categories"></nav>
+
+      <div class="sidebar-bottom">
+        <div class="status-dot"></div>
+        <div><strong>Your workspace</strong><small>Saved in this browser</small></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="currentView">All tools</strong></div>
+        <div class="top-actions">
+          <span class="local-badge"><span class="tiny-dot"></span> Local dashboard</span>
+          <button class="avatar" title="Local dashboard" aria-label="Local dashboard">R</button>
+        </div>
+      </header>
+
+      <section class="welcome">
+        <div class="welcome-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> YOUR AI WORKSPACE</div>
+          <h1>Everything you need.<br><span>One launchpad.</span></h1>
+          <p>All your favorite AI tools, organized in one calm, focused space.</p>
+        </div>
+        <div class="welcome-art" aria-hidden="true">
+          <div class="orbit-ring ring-a"></div><div class="orbit-ring ring-b"></div>
+          <div class="orbit-core"><span>✦</span></div>
+          <div class="orbit-chip chip-a">AI</div><div class="orbit-chip chip-b">✧</div><div class="orbit-chip chip-c">⌘</div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="Tool controls">
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Search tools, categories..." autocomplete="off" aria-label="Search tools">
+          <kbd>⌕</kbd>
+        </div>
+        <div class="toolbar-actions">
+          <label class="sort-wrap" for="sortSelect"><span>Sort:</span>
+            <select id="sortSelect">
+              <option value="name">Name</option>
+              <option value="category">Category</option>
+              <option value="recent">Recently used</option>
+            </select>
+          </label>
+          <button class="primary-button" id="addToolBtn"><span class="plus">＋</span> Add tool</button>
+        </div>
+      </section>
+
+      <section class="section-heading">
+        <div>
+          <h2 id="sectionTitle">Your tools <span class="heading-count" id="visibleCount">10</span></h2>
+          <p id="sectionSubtitle">Pick a tool and get straight to work.</p>
+        </div>
+        <button class="text-button" id="restoreBtn" title="Restore the original starter tools">Restore defaults ↺</button>
+      </section>
+
+      <section id="toolGrid" class="tool-grid" aria-live="polite"></section>
+      <section id="emptyState" class="empty-state" hidden>
+        <div class="empty-symbol">⌕</div>
+        <h3>No tools found</h3>
+        <p>Try another search or add a new tool to your workspace.</p>
+        <button class="secondary-button" id="emptyAddBtn">＋ Add a tool</button>
+      </section>
+
+      <footer class="footer">
+        <span><span class="footer-star">✦</span> Built for your workflow</span>
+        <span><span id="footerToolCount">10</span> shortcuts <i></i> Stored locally in this browser</span>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="toolDialog" class="tool-dialog">
+    <form id="toolForm" method="dialog">
+      <div class="dialog-top">
+        <div><div class="dialog-kicker">WORKSPACE SETTINGS</div><h2 id="dialogTitle">Add a tool</h2></div>
+        <button type="button" class="icon-button close-button" id="closeDialogBtn" aria-label="Close">×</button>
+      </div>
+      <p class="dialog-intro">Add any website to your launchpad. It will open in a new browser tab.</p>
+      <input type="hidden" id="toolId">
+      <label for="toolName">Tool name <span>*</span></label>
+      <input id="toolName" type="text" maxlength="60" placeholder="e.g. Perplexity AI" required>
+      <label for="toolUrl">Website URL <span>*</span></label>
+      <input id="toolUrl" type="text" inputmode="url" autocomplete="url" placeholder="https://example.com or example.com" required>
+      <label for="toolDescription">Details</label>
+      <textarea id="toolDescription" maxlength="180" rows="3" placeholder="What do you use this website for?"></textarea>
+      <label for="toolCategory">Category</label>
+      <input id="toolCategory" type="text" maxlength="40" list="categorySuggestions" placeholder="e.g. AI Chat">
+      <datalist id="categorySuggestions">
+        <option value="AI Chat"><option value="Coding"><option value="Web Development">
+        <option value="AI Development"><option value="Design"><option value="Productivity"><option value="Other">
+      </datalist>
+      <div class="dialog-note"><span>ⓘ</span><p>Only add trusted website URLs. This dashboard does not access passwords, cookies, or private browser data.</p></div>
+      <div class="form-error" id="formError" role="alert"></div>
+      <div class="dialog-actions">
+        <button type="button" class="secondary-button" id="cancelDialogBtn">Cancel</button>
+        <button type="submit" class="primary-button" id="saveToolBtn">Save tool <span>↗</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="confirmDialog" class="confirm-dialog">
+    <div class="confirm-content">
+      <div class="confirm-icon">↺</div>
+      <h2>Restore default tools?</h2>
+      <p>This replaces your current list with the original starter shortcuts. Your custom tools will be removed.</p>
+      <div class="dialog-actions">
+        <button class="secondary-button" id="keepToolsBtn">Keep my tools</button>
+        <button class="danger-button" id="confirmRestoreBtn">Restore defaults</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
